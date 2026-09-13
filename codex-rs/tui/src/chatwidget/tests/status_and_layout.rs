@@ -9,6 +9,42 @@ use pretty_assertions::assert_eq;
 use ratatui::backend::TestBackend;
 use serial_test::serial;
 
+#[tokio::test]
+async fn local_token_cost_remains_visible_and_discounts_cached_input() {
+    let (mut chat, _rx, _ops) =
+        make_chatwidget_manual(Some("gpt-6-astra")).await;
+    chat.local_settings.tui.status_line = Some(vec!["local-token-cost".to_string()]);
+    chat.refresh_status_line();
+    assert_eq!(chat.status_line_text(), Some("API est ~$0.00".to_string()));
+
+    chat.set_token_info(Some(TokenUsageInfo {
+        total_token_usage: TokenUsage {
+            input_tokens: 100_000,
+            cached_input_tokens: 80_000,
+            output_tokens: 10_000,
+            reasoning_output_tokens: 5_000,
+            total_tokens: 110_000,
+        },
+        last_token_usage: TokenUsage::default(),
+        model_context_window: None,
+    }));
+    chat.refresh_status_line();
+    assert_eq!(chat.status_line_text(), Some("API est ~$0.78".to_string()));
+    insta::assert_snapshot!(chat.status_line_text().unwrap(), @"API est ~$0.78");
+
+    chat.set_token_info(None);
+    chat.refresh_status_line();
+    assert_eq!(chat.status_line_text(), Some("API est loading".to_string()));
+}
+
+#[tokio::test]
+async fn local_token_cost_does_not_invent_unknown_model_prices() {
+    let (mut chat, _rx, _ops) = make_chatwidget_manual(Some("unknown-local-model")).await;
+    chat.local_settings.tui.status_line = Some(vec!["local-token-cost".to_string()]);
+    chat.refresh_status_line();
+    assert_eq!(chat.status_line_text(), Some("API est unavailable".to_string()));
+}
+
 fn enable_test_ambient_pet(chat: &mut ChatWidget) {
     chat.set_pet_image_support_for_tests(crate::pets::PetImageSupport::Supported(
         crate::pets::ImageProtocol::Kitty,
