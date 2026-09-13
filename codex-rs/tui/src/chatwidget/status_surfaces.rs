@@ -797,6 +797,16 @@ impl ChatWidget {
                 .estimated_thread_usage()
                 .and_then(|usage| usage.estimated_usage_usd_micros)
                 .and_then(format_estimated_usd_micros),
+            StatusLineItem::LocalTokenCost => Some(if self.token_usage_pending {
+                "API est loading".to_string()
+            } else {
+                crate::local_token_cost::estimate(
+                    self.current_model(),
+                    &self.status_line_total_usage(),
+                )
+                .map(|cost| format!("API est {cost}"))
+                .unwrap_or_else(|| "API est unavailable".to_string())
+            }),
             StatusLineItem::SessionId => self.thread_id.map(|id| id.to_string()),
             StatusLineItem::FastMode => self
                 .model_catalog
@@ -866,6 +876,7 @@ impl ChatWidget {
             StatusSurfacePreviewItem::TotalOutputTokens => StatusLineItem::TotalOutputTokens,
             StatusSurfacePreviewItem::ThreadCredits => StatusLineItem::ThreadCredits,
             StatusSurfacePreviewItem::EstimatedThreadCost => StatusLineItem::EstimatedThreadCost,
+            StatusSurfacePreviewItem::LocalTokenCost => StatusLineItem::LocalTokenCost,
             StatusSurfacePreviewItem::SessionId => StatusLineItem::SessionId,
             StatusSurfacePreviewItem::FastMode => StatusLineItem::FastMode,
             StatusSurfacePreviewItem::RawOutput => StatusLineItem::RawOutput,

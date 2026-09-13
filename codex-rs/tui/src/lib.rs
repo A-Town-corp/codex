@@ -225,6 +225,7 @@ mod thread_color;
 mod thread_transcript;
 mod token_usage;
 mod tool_output;
+mod local_token_cost;
 mod tooltips;
 mod transcript_mode;
 mod transcript_reflow;
