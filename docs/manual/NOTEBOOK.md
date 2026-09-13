@@ -9,6 +9,9 @@
 - Decision: add `local-token-cost`, independent of billing eligibility. Reuse cumulative TUI token totals. Label `API est`; calculate the equivalent value at the currently selected model's Standard short-context rate. Changing models intentionally revalues the total. Exclude tool fees, cache-write premiums, Fast mode, long-context premiums, and child-thread usage not in those totals. This is a comparison estimate, not an invoice.
 - Rejected: editing account eligibility (does not supply billing data); renaming conversations (changes saved names); terminal-output interception (fragile during redraw).
 - Verification plan: zero usage, cache discount, reasoning not double-counted, unknown model, pending usage, rendering snapshot, Windows launch.
+- RED: `just test -p codex-tui --lib -E 'test(local_token_cost)'` compiled in 9m 28s and ran 2 tests; both returned `None` instead of the requested field. Checkpoint `934c2e1`.
+- GREEN: the same command compiled in 1m 19s and reported `2 tests run: 2 passed, 4273 skipped`. The skipped count is the explicit name filter, not disabled tests. Implementation checkpoint `a60cdcd`.
+- `just bazel-lock-update` completed with exit code 0; `MODULE.bazel.lock` did not change.
 
 ## Research Log
 
@@ -21,6 +24,8 @@
 Totals: 6 search queries; 5 distinct fetched source URLs. GitHub extractor flattened Rust and truncated tests; checked out matching release to inspect exact source. API pricing anchor was missing; fetch returned full document. No billing bypass or custom command option found.
 
 Sources:
+Final verification: full CLI build succeeded; `just fmt` succeeded (three unrelated Buildifier CRLF edits undone). Full TUI suite: 4244 passed, 34 failed, one timed out, 10 skipped; evidence retained in target/nextest/local/junit.xml. Custom package installed separately, original config and user PATH backed up. cmd.exe PTY displayed `API est ~$0.00` first in the live footer; no inference request was needed. Existing higgsfield/runpod login warnings remain. Maintenance and baseline failures captured in BACKLOG.md.
+
 - https://github.com/openai/codex/blob/36f0dbe796d9bb1a18a0fc0640ed08b3e1d54564/codex-rs/tui/src/bottom_pane/status_line_setup.rs
 - https://github.com/openai/codex/blob/36f0dbe796d9bb1a18a0fc0640ed08b3e1d54564/codex-rs/tui/src/chatwidget/thread_usage_tests.rs
 - https://github.com/openai/codex/blob/36f0dbe796d9bb1a18a0fc0640ed08b3e1d54564/codex-rs/tui/src/chatwidget/status_surfaces.rs
