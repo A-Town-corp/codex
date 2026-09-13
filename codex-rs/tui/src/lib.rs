@@ -214,6 +214,7 @@ mod text_formatting;
 mod theme_picker;
 mod thread_transcript;
 mod token_usage;
+mod local_token_cost;
 mod tooltips;
 mod transcript_reflow;
 mod tui;
