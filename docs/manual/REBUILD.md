@@ -43,6 +43,25 @@ Live verification used the official `codex exec-server --listen stdio://` to sta
 
 For rollback, preserve the new junction by renaming `bin` to an unused backup name, then rename `bin.stock-0.159.3` back to `bin`. Remove `local-token-cost` from the config when using an official executable. The old 0.154.0 custom package also remains at `C:/Users/Fonem/.local/codex-cost`. Future upstream upgrades may replace the launcher; re-port before switching to a newer official version.
 
+### Plain-command defaults, 2026-10-01
+
+`C:/Users/Fonem/.local/codex-launcher` is first on persisted user PATH. Its native `codex.exe` delegates to the existing installed Codex binary with `--no-daemon` before the original arguments. Source is `scripts/codex_no_daemon_launcher.rs`; it inherits console input/output, forwards the child exit code, and lets Codex handle Ctrl+C while the launcher waits. No dependency was added. No standalone Rust launcher precedent was found; process spawning follows the existing Rust `Command` pattern.
+
+From this repository root, using installed Rust 1.98.1:
+
+```powershell
+rustfmt scripts/codex_no_daemon_launcher.rs
+rustc --edition 2024 -C opt-level=2 scripts/codex_no_daemon_launcher.rs -o C:\Users\Fonem\.local\codex-launcher\codex.exe
+```
+
+The first `.cmd` wrapper failed a quoted TOML config argument (`invalid type: string "[model-with-reasoning,local-token-cost]", expected a sequence`). It was replaced by the native launcher and preserved as `codex.cmd.previous`. Afterward, with the launcher directory prepended to the verification process's PATH, `Get-Command codex` resolved to its native `codex.exe`, `codex --version` printed `codex-cli 0.159.3`, and `codex -c 'tui.status_line=["model-with-reasoning","local-token-cost"]' features list` loaded successfully. An inline Python subprocess check confirmed that an invalid argument returns Codex's exit code 2 through the launcher.
+
+The user config now has `approvals_reviewer = 'auto_review'` alongside the existing `approval_policy = 'on-request'` and `sandbox_mode = 'workspace-write'`. A parsed `tomllib` assertion verified this exact triple. The installed source's `approve_for_me_configures_interactive_mode` test establishes that these are precisely the `--approve-for-me` settings: automatic review with workspace-write, rather than disabling the sandbox.
+
+The parser-level launcher check invoked `codex.exe agents` through the launcher and asserted the exact diagnostic `--no-daemon cannot be used with codex agents`, confirming automatic flag forwarding without an interactive session. A live PTY check rendered `API est ~$0.00`, but `/status` verification timed out during initialization, including with hook states temporarily disabled. Live confirmation of the permission label remains unverified; config loading and the exact saved permission triple passed. No saved hook settings were changed. A process inventory found no remaining smoke-test Codex processes.
+
+The native launcher injects `--no-daemon` into all invocations. Commands requiring a daemon, such as `codex agents` or remote connections, should be invoked through the direct installed binary. For rollback, remove only `C:/Users/Fonem/.local/codex-launcher` from user PATH and remove the added `approvals_reviewer` key; preserve the package and other PATH entries. A terminal restart loads the persisted PATH.
+
 The remaining sections preserve the earlier 0.154.0 investigation record; their in-progress statements are historical.
 
 ## Source

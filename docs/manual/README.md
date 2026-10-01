@@ -4,6 +4,8 @@ This checkout ports the existing local API-equivalent cost footer to upstream ta
 
 Installed package: `C:/Users/Fonem/.local/codex-cost-0.159.3`, metadata version `0.159.3+local-cost.1`. Both normal `codex` and `codex-cost` launch it. Reopen the CLI after installation. Upstream upgrades can replace the launcher or require a new port; see the installation and rollback notes in [REBUILD.md](REBUILD.md).
 
+Plain `codex` now resolves to `C:/Users/Fonem/.local/codex-launcher/codex.exe`, which automatically adds `--no-daemon` and preserves arguments and exit codes. The user config defaults to `approvals_reviewer = 'auto_review'`, `approval_policy = 'on-request'`, and `sandbox_mode = 'workspace-write'`, matching `--approve-for-me`. Restart the terminal to load the persisted user PATH. The separate `codex-cost` command still calls the package directly.
+
 The footer uses cumulative thread token counts and the currently selected model's Standard short-context API rate. Changing models revalues the total. It excludes tool fees, cache-write premiums, speed premiums, and long-context/regional premiums; it is not a subscription invoice. Unknown models show `API est unavailable`.
 
 - [Rebuild and installation history](REBUILD.md)
