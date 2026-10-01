@@ -42,8 +42,7 @@ async fn finalized_voice_transcript_renders_beside_the_streamed_cell() {
 
 #[tokio::test]
 async fn local_token_cost_remains_visible_and_discounts_cached_input() {
-    let (mut chat, _rx, _ops) =
-        make_chatwidget_manual(Some("gpt-6-astra")).await;
+    let (mut chat, _rx, _ops) = make_chatwidget_manual(Some("gpt-6-astra")).await;
     chat.local_settings.tui.status_line = Some(vec!["local-token-cost".to_string()]);
     chat.refresh_status_line();
     assert_eq!(chat.status_line_text(), Some("API est ~$0.00".to_string()));
@@ -73,7 +72,10 @@ async fn local_token_cost_does_not_invent_unknown_model_prices() {
     let (mut chat, _rx, _ops) = make_chatwidget_manual(Some("unknown-local-model")).await;
     chat.local_settings.tui.status_line = Some(vec!["local-token-cost".to_string()]);
     chat.refresh_status_line();
-    assert_eq!(chat.status_line_text(), Some("API est unavailable".to_string()));
+    assert_eq!(
+        chat.status_line_text(),
+        Some("API est unavailable".to_string())
+    );
 }
 
 #[tokio::test]
@@ -81,7 +83,7 @@ async fn local_token_cost_supports_current_gpt6_models() {
     for (model, expected) in [
         ("gpt-6.1-sol", "API est ~$0.15"),
         ("gpt-6-sol", "API est ~$0.16"),
-        ("gpt-6-luna", "API est ~$0.01"),
+        ("gpt-6-luna", "API est ~$0.0078"),
     ] {
         let (mut chat, _rx, _ops) = make_chatwidget_manual(Some(model)).await;
         chat.local_settings.tui.status_line = Some(vec!["local-token-cost".to_string()]);
