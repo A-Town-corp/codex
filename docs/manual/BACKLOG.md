@@ -2,8 +2,7 @@
 
 ## Now
 
-- Port and verify `local-token-cost` on 0.169.0, install it, and exercise the
-  resulting package through the normal launch command.
+- No active work.
 
 ## Next
 
@@ -17,9 +16,12 @@
 
 ## Done
 
-- 2026-11-16: The broader footer selection passed all 117 selected tests and
-  formatting checks passed. Compiler, Clippy, release, and package verification
-  are still running or pending in the detached build pipeline.
+- 2026-11-16: Installed `0.169.0+local-cost.1` behind the stable custom junction.
+  Normal `codex` and `codex-cost` report 0.169.0. Live PTY checks passed for the
+  packaged executable in isolated and real-account startup, and for the normal
+  installed launcher. Saved config and running sessions were preserved. The
+  broader footer selection passed all 117 tests; formatting, all-target TUI
+  checks, Clippy, release compilation, and all 3 launcher tests passed.
 - 2026-11-16: Fixed the launcher's duplicate `--no-daemon` injection. The installed
   old launcher reproduced CLI exit 2; the forwarding regression went from RED
   to GREEN and covers explicit flags and literal arguments after `--`.
@@ -27,15 +29,15 @@
   covering all 13 supported model rates, cached-input discounts, negative and
   excessive counters, overflow, reasoning-token accounting, unknown models,
   sub-cent formatting, pending usage, and the visible footer snapshot. The
-  broader footer selection, lint checks, release build, and installation remain
-  pending.
+  broader checks and installation subsequently passed as recorded above.
 - 2026-11-16: Proved the footer regression in both isolated and real-account
   terminals: official 0.169.0 rejects `local-token-cost`. The initial account
   routing error came from the test driver's stripped environment; explicit
   exec-server environment inheritance corrected the test without changing auth.
-- 2026-11-16: Tested and pushed the stable custom launcher path. Both integration
-  tests pass, covering quoted TOML arguments, child exit codes, and missing
-  packages. Installation is still pending the complete package checks.
+- 2026-11-16: Tested and installed the stable custom launcher path. Integration
+  tests cover quoted TOML arguments, child exit codes, missing packages, invalid
+  user-profile paths, and explicit/literal `--no-daemon` arguments. Restored the
+  official install path to its stock package, separately from the custom CLI.
 - 2026-11-16: Backed up `local-cost-0.159.3` (`95b022ec`) and
   `local-cost-statusline` (`a2b12595`) to the fork and verified both SHAs through a
   fresh remote query. Created an isolated 0.169.0 worktree and verified the

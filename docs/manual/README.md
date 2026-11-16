@@ -2,6 +2,9 @@
 
 This fork adds `local-token-cost` to the upstream terminal footer. The current
 port targets upstream `rust-v0.169.0`; older builds are retained for rollback.
+The installed Windows package is `0.169.0+local-cost.1`. Both `codex` and
+`codex-cost` launch it through `.local/codex-cost-current`; existing sessions
+keep their previously loaded executable until closed.
 Source branches live in `A-Town-corp/codex`; `origin` is official upstream and
 `atown` is the fork.
 
@@ -28,6 +31,13 @@ live terminal check fails with `CLI rejected local-token-cost as an invalid
 footer item`, proving the missing feature independently of the source tests.
 The broader footer selection passed all 117 selected tests; 5,932 tests were
 outside that selection.
+`cargo fmt --all --check`, `cargo check --locked -p codex-tui --all-targets`,
+and `cargo clippy --locked -p codex-tui --all-targets -- -D warnings` passed.
+The release build and all 3 native launcher integration tests passed. Live PTY
+checks rendered `API est ~$0.00` in the packaged executable with both an isolated
+profile and the saved account, then through the installed normal launcher.
+These checks sent no model prompt and left saved config unchanged. Nonzero cost
+and model changes are covered by source tests.
 
 Model rates were checked against the
 [official Standard pricing table](https://developers.openai.com/api/docs/pricing)

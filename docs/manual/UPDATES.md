@@ -73,6 +73,37 @@ arguments. Its target is the stable `.local/codex-cost-current/bin/codex.exe`
 path under the user profile. A future installer can switch that junction after
 verifying a package; the launcher itself does not need rebuilding every release.
 
+## Installed workstation layout and rollback
+
+Installed and verified on 2026-11-16:
+
+- `.local/codex-launcher/codex.exe` and its native `codex-cost.exe` alias are
+  first on PATH. Both delegate to `.local/codex-cost-current/bin/codex.exe`.
+- `.local/codex-cost-current` is a junction to `.local/codex-cost-0.169.0`.
+  The package contains matching official 0.169.0 helpers, custom metadata version
+  `0.169.0+local-cost.1`, and `local-cost-build.json` with source and hash provenance.
+- The main CLI SHA-256 is
+  `8d5c9053e95b86ad13e9de7aa228a09771122f7ade2127f5426fbe230a285bb7`.
+- The official `AppData/Local/Programs/OpenAI/Codex/bin` junction again targets
+  `.codex/packages/standalone/current/bin`. It is separate from the custom path;
+  this work did not upgrade that stock package. The old custom junction is
+  retained as `bin.custom-0.159.3.previous` in the same install directory.
+- The previous native launcher is retained as
+  `.local/codex-launcher/codex.pre-0.169.0.exe`. The npm command shim now delegates
+  to the native alias; its old contents are backed up as `codex-cost.cmd.pre-0.169.0`.
+
+Keep `.local/codex-cost-0.159.3` for rollback. To roll back, preserve the current
+junction under a new name and create `codex-cost-current` pointing at that older
+package, then check `codex --version` and its footer. Only rename the junction,
+never recursively delete its target. The stable launcher can launch either
+package, so rollback does not require replacing the launcher or stopping an
+already running session. To update again, first stage and verify a new versioned
+package, then switch this same junction. No automatic custom updater is installed.
+
+The terminal smoke checks deliberately select a compact footer for the process.
+The saved layout is preserved; if its last items are clipped in a narrow terminal,
+use `/statusline` to put `local-token-cost` earlier or select fewer items.
+
 ## Terminal verification
 
 `scripts/smoke_local_cost.py` uses the official exec-server to create a real PTY,
