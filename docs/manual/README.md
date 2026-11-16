@@ -1,0 +1,29 @@
+# Local Codex cost status line
+
+This fork adds `local-token-cost` to the upstream terminal footer. The current
+port targets upstream `rust-v0.169.0`; older builds are retained for rollback.
+Source branches live in `A-Town-corp/codex`; `origin` is official upstream and
+`atown` is the fork.
+
+The estimate values cumulative thread tokens at the selected model's Standard
+short-context API rate. Cached input is discounted, reasoning tokens are already
+included in output, and switching models revalues the total. This is an
+API-equivalent estimate, not a subscription bill. Tools, cache writes, Fast mode,
+long-context premiums, and regional premiums are excluded. Unknown models show
+`API est unavailable`.
+
+Use the pinned Rust toolchain in `codex-rs/rust-toolchain.toml` and dependencies
+in `codex-rs/Cargo.lock`. From the repository root:
+
+```powershell
+just test -p codex-tui --lib -E 'test(local_token_cost)'
+just test -p codex-tui --lib -E 'test(local_token_cost) | test(status_line) | test(status_surface_preview)'
+```
+
+See [UPDATES.md](UPDATES.md) for update architecture and
+[BACKLOG.md](BACKLOG.md) for current verification status.
+
+Model rates were checked against the
+[official Standard pricing table](https://developers.openai.com/api/docs/pricing)
+on 2026-11-16. Existing rates remain valid; GPT-6.1 Terra adds input $1.00,
+cached input $0.05, and output $5.00 per million tokens.
