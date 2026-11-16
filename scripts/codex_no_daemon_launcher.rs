@@ -1,6 +1,7 @@
 //! User-local Windows launcher: preserve arguments and run Codex without its daemon.
 
 use std::env;
+use std::ffi::OsStr;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -26,9 +27,17 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
         .join("codex-cost-current")
         .join("bin")
         .join("codex.exe");
-    let status = Command::new(&target)
-        .arg("--no-daemon")
-        .args(env::args_os().skip(1))
+    let arguments = env::args_os().skip(1).collect::<Vec<_>>();
+    let has_no_daemon = arguments
+        .iter()
+        .take_while(|argument| argument.as_os_str() != OsStr::new("--"))
+        .any(|argument| argument.as_os_str() == OsStr::new("--no-daemon"));
+    let mut command = Command::new(&target);
+    if !has_no_daemon {
+        command.arg("--no-daemon");
+    }
+    let status = command
+        .args(arguments)
         .status()
         .map_err(|error| format!("failed to launch {}: {error}", target.display()))?;
     Ok(status.code().unwrap_or(1))
