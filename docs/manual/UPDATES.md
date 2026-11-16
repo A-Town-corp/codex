@@ -40,6 +40,39 @@ the installer should consume verified custom releases, never silently substitute
 a stock binary. Until implemented and exercised, this is a proposal rather than
 an available automatic update feature.
 
+## Current repeatable build command
+
+From PowerShell 7 at the repository root:
+
+```powershell
+./scripts/build-local-cost.ps1
+```
+
+To reuse the local workstation's existing Cargo cache:
+
+```powershell
+./scripts/build-local-cost.ps1 -TargetDirectory C:\Users\Fonem\Dev\codex-cost\codex-rs\target
+```
+
+The script runs the broader footer selection, Rust formatting checks, all TUI
+target checks, Clippy with warnings denied, release compilation, and standalone
+launcher tests. It produces `release/codex.exe` and `release/codex-launcher.exe`
+under the selected target directory. Packaging and installation are separate;
+running a build never switches the active CLI.
+
+The default uses one compiler worker, release optimization level 1, no LTO,
+16 codegen units, and no debug symbols to bound memory use. It retains release
+behavior and restores process environment settings on exit. `-BuildJobs` can
+select more workers when RAM permits. Use the documented detached launcher and
+RAM preflight for a long local run. Required tools are the pinned Rust toolchain,
+MSVC build tools, `just`, and Cargo Nextest.
+
+The standalone launcher defaults to `--no-daemon`, preserves an explicit copy
+without duplicating it, and respects the `--` delimiter for literal prompt
+arguments. Its target is the stable `.local/codex-cost-current/bin/codex.exe`
+path under the user profile. A future installer can switch that junction after
+verifying a package; the launcher itself does not need rebuilding every release.
+
 ## Terminal verification
 
 `scripts/smoke_local_cost.py` uses the official exec-server to create a real PTY,

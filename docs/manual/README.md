@@ -26,6 +26,8 @@ See [UPDATES.md](UPDATES.md) for update architecture and
 The first 0.169.0 source run passed all 7 focused tests. The official release's
 live terminal check fails with `CLI rejected local-token-cost as an invalid
 footer item`, proving the missing feature independently of the source tests.
+The broader footer selection passed all 117 selected tests; 5,932 tests were
+outside that selection.
 
 Model rates were checked against the
 [official Standard pricing table](https://developers.openai.com/api/docs/pricing)

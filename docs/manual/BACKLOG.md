@@ -17,6 +17,12 @@
 
 ## Done
 
+- 2026-11-16: The broader footer selection passed all 117 selected tests and
+  formatting checks passed. Compiler, Clippy, release, and package verification
+  are still running or pending in the detached build pipeline.
+- 2026-11-16: Fixed the launcher's duplicate `--no-daemon` injection. The installed
+  old launcher reproduced CLI exit 2; the forwarding regression went from RED
+  to GREEN and covers explicit flags and literal arguments after `--`.
 - 2026-11-16: Ported the footer integration to 0.169.0. All 7 focused tests pass,
   covering all 13 supported model rates, cached-input discounts, negative and
   excessive counters, overflow, reasoning-token accounting, unknown models,
