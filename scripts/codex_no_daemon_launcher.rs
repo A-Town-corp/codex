@@ -20,17 +20,17 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
     if unsafe { SetConsoleCtrlHandler(Some(handle_console_event), 1) } == 0 {
         return Err(std::io::Error::last_os_error().into());
     }
-    let local_app_data = env::var_os("LOCALAPPDATA").ok_or("LOCALAPPDATA is missing")?;
-    let target = PathBuf::from(local_app_data)
-        .join("Programs")
-        .join("OpenAI")
-        .join("Codex")
+    let user_profile = env::var_os("USERPROFILE").ok_or("USERPROFILE is missing")?;
+    let target = PathBuf::from(user_profile)
+        .join(".local")
+        .join("codex-cost-current")
         .join("bin")
         .join("codex.exe");
-    let status = Command::new(target)
+    let status = Command::new(&target)
         .arg("--no-daemon")
         .args(env::args_os().skip(1))
-        .status()?;
+        .status()
+        .map_err(|error| format!("failed to launch {}: {error}", target.display()))?;
     Ok(status.code().unwrap_or(1))
 }
 
