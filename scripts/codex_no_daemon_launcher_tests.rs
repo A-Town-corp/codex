@@ -22,24 +22,40 @@ fn stable_custom_target_preserves_quoted_arguments_and_exit_code()
         bin.join("codex.exe"),
     )?;
     let config = r#"tui.status_line=["model-with-reasoning","local-token-cost"]"#;
-    let output =
-        Command::new(std::env::var_os("CODEX_LAUNCHER_UNDER_TEST").ok_or("launcher missing")?)
-            .env("USERPROFILE", &root)
-            .env("LOCALAPPDATA", root.join("appdata"))
-            .args(["-c", config, "features", "list"])
-            .output()?;
-    assert_eq!(
-        output.status.code(),
-        Some(42),
-        "{}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-    assert_eq!(
-        String::from_utf8(output.stdout)?
-            .lines()
-            .collect::<Vec<_>>(),
-        vec!["--no-daemon", "-c", config, "features", "list"]
-    );
+    for (arguments, expected) in [
+        (
+            vec!["-c", config, "features", "list"],
+            vec!["--no-daemon", "-c", config, "features", "list"],
+        ),
+        (
+            vec!["--no-daemon", "--version"],
+            vec!["--no-daemon", "--version"],
+        ),
+        (
+            vec!["--", "--no-daemon"],
+            vec!["--no-daemon", "--", "--no-daemon"],
+        ),
+    ] {
+        let output =
+            Command::new(std::env::var_os("CODEX_LAUNCHER_UNDER_TEST").ok_or("launcher missing")?)
+                .env("USERPROFILE", &root)
+                .env("LOCALAPPDATA", root.join("appdata"))
+                .args(&arguments)
+                .output()?;
+        assert_eq!(
+            output.status.code(),
+            Some(42),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            String::from_utf8(output.stdout)?
+                .lines()
+                .collect::<Vec<_>>(),
+            expected,
+            "arguments: {arguments:?}"
+        );
+    }
     Ok(())
 }
 
