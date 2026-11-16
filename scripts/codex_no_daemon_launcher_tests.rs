@@ -78,3 +78,26 @@ fn missing_custom_package_reports_failure_without_a_stock_fallback()
     assert!(String::from_utf8(output.stderr)?.contains("codex launcher:"));
     Ok(())
 }
+
+#[test]
+fn invalid_profile_cannot_select_an_executable_from_the_working_directory()
+-> Result<(), Box<dyn std::error::Error>> {
+    let root = test_root("invalid-profile")?;
+    let bin = root.join(".local/codex-cost-current/bin");
+    std::fs::create_dir_all(&bin)?;
+    std::fs::copy(
+        std::env::var_os("CODEX_LAUNCHER_TEST_FIXTURE").ok_or("fixture missing")?,
+        bin.join("codex.exe"),
+    )?;
+    for profile in [".", ""] {
+        let output =
+            Command::new(std::env::var_os("CODEX_LAUNCHER_UNDER_TEST").ok_or("launcher missing")?)
+                .current_dir(&root)
+                .env("USERPROFILE", profile)
+                .output()?;
+        assert_eq!(output.status.code(), Some(1), "profile: {profile:?}");
+        assert!(output.stdout.is_empty());
+        assert!(String::from_utf8(output.stderr)?.contains("USERPROFILE"));
+    }
+    Ok(())
+}
