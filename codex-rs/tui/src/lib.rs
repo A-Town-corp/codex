@@ -182,6 +182,7 @@ mod local_settings;
 mod rendered_selection;
 pub use live_wrap::RowBuilder;
 mod local_chatgpt_auth;
+mod local_token_cost;
 mod managed_new_thread_defaults;
 mod markdown;
 mod markdown_render;

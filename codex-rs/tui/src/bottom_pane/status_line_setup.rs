@@ -135,6 +135,9 @@ pub(crate) enum StatusLineItem {
     /// Estimated dollar cost attributed directly to the current enterprise thread.
     EstimatedThreadCost,
 
+    /// Local API-equivalent token value at the current model's standard rate.
+    LocalTokenCost,
+
     /// Full thread UUID.
     #[strum(to_string = "thread-id", serialize = "session-id")]
     SessionId,
@@ -217,6 +220,9 @@ impl StatusLineItem {
             StatusLineItem::EstimatedThreadCost => {
                 "Estimated current-thread cost in USD (Enterprise workspaces only; omitted when unavailable)"
             }
+            StatusLineItem::LocalTokenCost => {
+                "Local token value at current model's Standard API rate; excludes tools and premiums"
+            }
             StatusLineItem::SessionId => "Current thread identifier (omitted until thread starts)",
             StatusLineItem::FastMode => "Effective processing tier for the current model",
             StatusLineItem::Daybreak => "Whether Daybreak is enabled for this thread",
@@ -261,6 +267,7 @@ impl StatusLineItem {
             StatusLineItem::TotalOutputTokens => StatusSurfacePreviewItem::TotalOutputTokens,
             StatusLineItem::ThreadCredits => StatusSurfacePreviewItem::ThreadCredits,
             StatusLineItem::EstimatedThreadCost => StatusSurfacePreviewItem::EstimatedThreadCost,
+            StatusLineItem::LocalTokenCost => StatusSurfacePreviewItem::LocalTokenCost,
             StatusLineItem::SessionId => StatusSurfacePreviewItem::SessionId,
             StatusLineItem::FastMode => StatusSurfacePreviewItem::FastMode,
             StatusLineItem::Daybreak => StatusSurfacePreviewItem::Daybreak,

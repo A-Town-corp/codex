@@ -17,6 +17,12 @@
 
 ## Done
 
+- 2026-11-16: Ported the footer integration to 0.169.0. All 7 focused tests pass,
+  covering all 13 supported model rates, cached-input discounts, negative and
+  excessive counters, overflow, reasoning-token accounting, unknown models,
+  sub-cent formatting, pending usage, and the visible footer snapshot. The
+  broader footer selection, lint checks, release build, and installation remain
+  pending.
 - 2026-11-16: Proved the footer regression in both isolated and real-account
   terminals: official 0.169.0 rejects `local-token-cost`. The initial account
   routing error came from the test driver's stripped environment; explicit

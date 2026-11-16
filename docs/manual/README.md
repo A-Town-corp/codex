@@ -23,6 +23,10 @@ just test -p codex-tui --lib -E 'test(local_token_cost) | test(status_line) | te
 See [UPDATES.md](UPDATES.md) for update architecture and
 [BACKLOG.md](BACKLOG.md) for current verification status.
 
+The first 0.169.0 source run passed all 7 focused tests. The official release's
+live terminal check fails with `CLI rejected local-token-cost as an invalid
+footer item`, proving the missing feature independently of the source tests.
+
 Model rates were checked against the
 [official Standard pricing table](https://developers.openai.com/api/docs/pricing)
 on 2026-11-16. Existing rates remain valid; GPT-6.1 Terra adds input $1.00,
