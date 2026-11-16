@@ -21,8 +21,14 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
     if unsafe { SetConsoleCtrlHandler(Some(handle_console_event), 1) } == 0 {
         return Err(std::io::Error::last_os_error().into());
     }
-    let user_profile = env::var_os("USERPROFILE").ok_or("USERPROFILE is missing")?;
-    let target = PathBuf::from(user_profile)
+    let user_profile = env::var_os("USERPROFILE")
+        .filter(|value| !value.is_empty())
+        .ok_or("USERPROFILE is missing or empty")?;
+    let user_profile = PathBuf::from(user_profile);
+    if !user_profile.is_absolute() {
+        return Err("USERPROFILE must be an absolute path".into());
+    }
+    let target = user_profile
         .join(".local")
         .join("codex-cost-current")
         .join("bin")
