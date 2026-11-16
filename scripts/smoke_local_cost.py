@@ -67,6 +67,7 @@ def main() -> int:
 
     transcript = ""
     started = False
+    smoke_home_manager = None
     skipped_hook_review = False
     submitted_statusline = False
     confirmed_statusline = False
@@ -88,7 +89,8 @@ def main() -> int:
             command.extend(["-c", f"mcp_servers.{name}.enabled=false"])
         environment = {"TERM": "xterm-256color"}
         if not args.real_account:
-            smoke_home = Path(tempfile.mkdtemp(prefix="codex-cost-smoke-"))
+            smoke_home_manager = tempfile.TemporaryDirectory(prefix="codex-cost-smoke-")
+            smoke_home = Path(smoke_home_manager.name)
             smoke_config = (
                 'model = "gpt-6.1-sol"\n'
                 'model_provider = "local-cost-smoke"\n'
@@ -109,6 +111,13 @@ def main() -> int:
                 "argv": command,
                 "cwd": Path.home().as_uri(),
                 "env": environment,
+                "envPolicy": {
+                    "inherit": "all",
+                    "ignoreDefaultExcludes": False,
+                    "exclude": [],
+                    "set": {},
+                    "includeOnly": [],
+                },
                 "tty": True,
             },
         )
@@ -203,15 +212,20 @@ def main() -> int:
     finally:
         args.transcript.parent.mkdir(parents=True, exist_ok=True)
         args.transcript.write_text(transcript, encoding="utf-8")
-        if started:
-            request("process/terminate", {"processId": "local-cost-smoke"})
-        assert server.stdin is not None
-        server.stdin.close()
         try:
-            server.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            server.kill()
-            server.wait(timeout=10)
+            if started:
+                request("process/terminate", {"processId": "local-cost-smoke"})
+        finally:
+            assert server.stdin is not None
+            server.stdin.close()
+            try:
+                server.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                server.kill()
+                server.wait(timeout=10)
+            finally:
+                if smoke_home_manager is not None:
+                    smoke_home_manager.cleanup()
 
 
 if __name__ == "__main__":

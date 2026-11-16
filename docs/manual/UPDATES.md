@@ -51,6 +51,9 @@ disabled only for that smoke process; saved config and hooks are unchanged.
 New or changed hooks are skipped without granting trust. The test also exercises
 the session-only `/statusline` command after the composer finishes its paste
 burst; this avoids relying on warnings hidden in the startup warning popup.
+The exec-server request explicitly inherits its environment. Without this,
+`envPolicy: null` supplies only the provided variables, and the incomplete
+Windows environment caused account routing to fail inside the test terminal.
 
 ```powershell
 python scripts/smoke_local_cost.py --codex <custom-codex.exe> --executor <official-codex.exe> --transcript <local-evidence.txt>

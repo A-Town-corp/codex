@@ -4,8 +4,6 @@
 
 - Port and verify `local-token-cost` on 0.169.0, install it, and exercise the
   resulting package through the normal launch command.
-- Investigate the official 0.169.0 real-account startup error: `account/read
-  failed: workspace routing discovery failed (code -32603)`.
 
 ## Next
 
@@ -19,6 +17,13 @@
 
 ## Done
 
+- 2026-11-16: Proved the footer regression in both isolated and real-account
+  terminals: official 0.169.0 rejects `local-token-cost`. The initial account
+  routing error came from the test driver's stripped environment; explicit
+  exec-server environment inheritance corrected the test without changing auth.
+- 2026-11-16: Tested and pushed the stable custom launcher path. Both integration
+  tests pass, covering quoted TOML arguments, child exit codes, and missing
+  packages. Installation is still pending the complete package checks.
 - 2026-11-16: Backed up `local-cost-0.159.3` (`95b022ec`) and
   `local-cost-statusline` (`a2b12595`) to the fork and verified both SHAs through a
   fresh remote query. Created an isolated 0.169.0 worktree and verified the
