@@ -73,6 +73,13 @@ arguments. Its target is the stable `.local/codex-cost-current/bin/codex.exe`
 path under the user profile. A future installer can switch that junction after
 verifying a package; the launcher itself does not need rebuilding every release.
 
+The standalone launcher disables the desktop-scoped `cua_repl` MCP server for
+its child process. This prevents a cached Windows pipe from a previous desktop
+session from being advertised in the CLI. The independently configured
+`chrome-devtools` MCP server provides Chrome access in the CLI. Run
+`codex mcp list` to check that `cua_repl` is disabled and `chrome-devtools`
+is enabled. The desktop app uses its own executable and configuration.
+
 ## Installed workstation layout and rollback
 
 Installed and verified on 2026-11-17:

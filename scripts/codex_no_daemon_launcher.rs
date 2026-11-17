@@ -39,6 +39,9 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
         .take_while(|argument| argument.as_os_str() != OsStr::new("--"))
         .any(|argument| argument.as_os_str() == OsStr::new("--no-daemon"));
     let mut command = Command::new(&target);
+    // The desktop plugin cache can contain a pipe from a closed desktop session.
+    // A disabled stdio entry still needs a command to pass config validation.
+    command.args(["-c", r#"mcp_servers.cua_repl={command="",enabled=false}"#]);
     if !has_no_daemon {
         command.arg("--no-daemon");
     }
