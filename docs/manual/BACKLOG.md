@@ -16,6 +16,10 @@
 
 ## Done
 
+- 2026-11-17: Added Standard API cost estimates for GPT-6.2 Astra and Sol and
+  installed `0.169.0+local-cost.2`. The 117 footer tests, release build, and
+  3 launcher tests passed. Both models displayed the footer in isolated PTYs,
+  and Sol displayed it through the installed launcher with the saved account.
 - 2026-11-16: Installed `0.169.0+local-cost.1` behind the stable custom junction.
   Normal `codex` and `codex-cost` report 0.169.0. Live PTY checks passed for the
   packaged executable in isolated and real-account startup, and for the normal

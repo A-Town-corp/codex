@@ -2,7 +2,7 @@
 
 This fork adds `local-token-cost` to the upstream terminal footer. The current
 port targets upstream `rust-v0.169.0`; older builds are retained for rollback.
-The installed Windows package is `0.169.0+local-cost.1`. Both `codex` and
+The installed Windows package is `0.169.0+local-cost.2`. Both `codex` and
 `codex-cost` launch it through `.local/codex-cost-current`; existing sessions
 keep their previously loaded executable until closed.
 Source branches live in `A-Town-corp/codex`; `origin` is official upstream and
@@ -43,3 +43,6 @@ Model rates were checked against the
 [official Standard pricing table](https://developers.openai.com/api/docs/pricing)
 on 2026-11-16. Existing rates remain valid; GPT-6.1 Terra adds input $1.00,
 cached input $0.05, and output $5.00 per million tokens.
+Using the same Standard short-context table on 2026-11-17, the GPT-6.2
+Astra rates are $8.00 input, $0.40 cached input, and $40.00 output per million
+tokens. GPT-6.2 Sol uses $2.00, $0.10, and $10.00 respectively.

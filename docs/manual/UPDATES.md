@@ -75,15 +75,17 @@ verifying a package; the launcher itself does not need rebuilding every release.
 
 ## Installed workstation layout and rollback
 
-Installed and verified on 2026-11-16:
+Installed and verified on 2026-11-17:
 
 - `.local/codex-launcher/codex.exe` and its native `codex-cost.exe` alias are
   first on PATH. Both delegate to `.local/codex-cost-current/bin/codex.exe`.
-- `.local/codex-cost-current` is a junction to `.local/codex-cost-0.169.0`.
+- `.local/codex-cost-current` is a junction to `.local/codex-cost-0.169.0-local-cost.2`.
   The package contains matching official 0.169.0 helpers, custom metadata version
-  `0.169.0+local-cost.1`, and `local-cost-build.json` with source and hash provenance.
+  `0.169.0+local-cost.2`, and `local-cost-build.json` with source and hash provenance.
 - The main CLI SHA-256 is
-  `8d5c9053e95b86ad13e9de7aa228a09771122f7ade2127f5426fbe230a285bb7`.
+  `e0b2fa5f9f54d221ed2243606442bc4797d11a6832aad84388d365f13812572e`.
+- The previous `0.169.0+local-cost.1` package is retained at
+  `.local/codex-cost-0.169.0` and linked by `codex-cost-current.pre-local-cost.2`.
 - The official `AppData/Local/Programs/OpenAI/Codex/bin` junction again targets
   `.codex/packages/standalone/current/bin`. It is separate from the custom path;
   this work did not upgrade that stock package. The old custom junction is
