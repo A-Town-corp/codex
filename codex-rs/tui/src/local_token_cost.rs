@@ -1,7 +1,7 @@
 //! API-equivalent value of token totals at the selected model's standard rate.
 //!
 //! This is not subscription billing. Model switches revalue the entire total.
-//! Rates are USD per million tokens, verified 2026-11-16 against
+//! Rates are USD per million tokens. GPT-6.2 rates were verified 2026-11-17 against
 //! https://developers.openai.com/api/docs/pricing (Standard, short context).
 //! Tool charges, cache-write premiums, Fast mode, and long-context/regional
 //! premiums are excluded because these cumulative counters do not identify them.
@@ -11,6 +11,8 @@ use crate::token_usage::TokenUsage;
 
 pub(crate) fn estimate(model: &str, usage: &TokenUsage) -> Option<String> {
     let (input_rate, cached_rate, output_rate) = match model {
+        "gpt-6.2-astra" => (8.0, 0.4, 40.0),
+        "gpt-6.2-sol" => (2.0, 0.1, 10.0),
         "gpt-6-astra" => (10.0, 1.0, 50.0),
         "gpt-6.1-sol" => (2.0, 0.1, 10.0),
         "gpt-6.1-terra" => (1.0, 0.05, 5.0),
