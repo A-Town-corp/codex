@@ -12,6 +12,8 @@ fn values_cached_input_and_output_for_all_supported_models() {
         total_tokens: 110_000,
     };
     for (model, expected) in [
+        ("gpt-6.2-astra", "~$0.59"),
+        ("gpt-6.2-sol", "~$0.15"),
         ("gpt-6-astra", "~$0.78"),
         ("gpt-6.1-sol", "~$0.15"),
         ("gpt-6.1-terra", "~$0.07"),
